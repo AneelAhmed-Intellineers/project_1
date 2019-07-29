@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+pytest-cov = "*"
+pytest-xdlist = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.7"

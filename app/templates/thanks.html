@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thank You</title>
+</head>
+<body>
+<h2>Response Entered by you:</h2>
+<form action="/student/thanks/" method="post">{% csrf_token %}
+
+            <ul>
+            <li>Name: <strong>{{ name }}</strong></li>
+
+            <li>Email: <strong>{{ email }}</strong></li>
+
+            <li>department: <strong>{{ department }}</strong></li>
+
+            <li>enrollment: <strong>{{ enrollment }}</strong></li>
+          </ul>
+
+          <input type="submit" value="Submit"></td>
+</form>
+</body>
+</html>
