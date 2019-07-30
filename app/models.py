@@ -27,7 +27,7 @@ class Student(models.Model):
     name = models.CharField(max_length=30) 
     email = models.EmailField(max_length=30)
     department = models.CharField(max_length=40)
-    enrollment = models.CharField(max_length=10)
+    enrollment = models.CharField(max_length=10, null=False)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, null=True)
 
 

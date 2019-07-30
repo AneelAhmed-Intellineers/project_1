@@ -10,7 +10,6 @@ class StudentForm(forms.ModelForm):
     class Meta:
 
         model = Student
-
         fields = ('name', 'department','email', 'enrollment')
 
 class ResultForm(forms.ModelForm):
@@ -18,5 +17,4 @@ class ResultForm(forms.ModelForm):
     class Meta:
 
         model = Student
-
         fields = ('name', 'enrollment')
