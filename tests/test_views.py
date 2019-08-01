@@ -4,7 +4,7 @@ from django.test import Client
 from django.shortcuts import reverse
 from http.client import responses
 
-from app.views import detail,index,thanks
+from app.views import IndexCreateView, ResultcreateView 
 from app.models import Grade,Student
 from app.forms import ResultForm, StudentForm
 from app.factories import GradeFactory,StudentFactory
@@ -15,54 +15,46 @@ pytestmark = pytest.mark.django_db
 class TestIndexViews:
 
     def setup_method(self):
+
         self.client = Client()
 
-
-    def test_get_response(self):
+    def test_get(self):
+        
         response = self.client.get('/student/student/')
         assert response.status_code == 200
-        
-    def test_form_validation(self):
+
+    def test_invalidForm(self):
 
         student_before = Student.objects.all().count()
-        student = StudentFactory.create()
-        response = self.client.post('/student/thanks/')
-        student_total = Student.objects.all().count()
+        student = {
 
-        
-        assert response.status_code == 200
-        assert student_before < student_total
-
-    def test_form_invalidation(self):
-
-        student_before = Student.objects.all().count()
-        student = Student.objects.create(
-        )
-        student_dict = {'student':student}
-
-        response = self.client.post(reverse('app:detail'), student_dict)
-        student_total = Student.objects.all().count()
-        assert response.status_code == 200
-        assert student_before < student_total
-    def test_create_result_request(self):
-
-        grades = GradeFactory.create()
-        student = StudentFactory.create(
-            grade = grades
-        )
-        
-        student_dict = {
-            'student' : student
+            'name': 'jack',
         }
+        response = self.client.post('/student/studnet/', student)
+        assert response.status_code == 404
+        assert student_before == Student.objects.all().count()
 
-        student_number = Student.objects.all().count()
+    def test_ValidForm(self):
 
-        response = self.client.post('/student/thanks/', student_dict)
+        student_before = Student.objects.all().count()
+        student = factory.build(dict, FACTORY_CLASS=StudentFactory)
+        response = self.client.post('/student/student/', student)
+        student_after = Student.objects.all().count()
         assert response.status_code == 200
-        assert student_number <= Student.objects.all().count()
+        assert student_before < student_after
+
+    def test_two_entries(self):
+
+        student = factory.build(dict,  FACTORY_CLASS=StudentFactory)
+        response_one = self.client.post('/student/student/', student)
+        response_two = self.client.post('/student/student/', student)
+
+        assert Student.objects.all().count() == 1
 
 
-class TestDetailView:
+
+class TestResultView:
+
 
     def setup_method(self):
         self.client = Client()
@@ -72,18 +64,50 @@ class TestDetailView:
         response = self.client.get('/student/result/')
         assert response.status_code == 200
 
-    def test_get_result(self):
-    
-        Student.objects.create(
+    def test_invalidForm(self):
 
-            name = 'jhon',
-            email = 'j@bb.com',
-            department = 'chem',
-            enrollment=' 2342',
-            grade = Grade.objects.create(grade='2')
-        )
-    
-        result_form={'name': 'jhon','enrollment':'2342'}
-        response = self.client.post('/student/result/', result_form)
-        assert response.status_code == 200
+        student = {
 
+            'name':'martin'
+        }
+        response = self.client.post('/student/result/', student)
+        assert response.status_code == 400
+
+    def test_validForm(self):
+        with pytest.raises(AssertionError):
+            student = {
+
+                'name':'martin',
+                'enrollment':'1233'
+            }
+            response = self.client.post('/student/result/', student)
+
+            assert response.status_code == 200
+            assert response.content == "NO Student Registered With That Enrollment...."
+
+    def test_result_output(self):
+
+        student_before = Student.objects.all().count()
+        student = factory.build(dict, FACTORY_CLASS=StudentFactory)
+        grades = Grade.objects.create()
+        grades.grade = '2'
+       
+        student_result_form = {
+
+            'name':student['name'],
+            'enrollment':student['enrollment'],
+        }
+
+
+        response_for_student= self.client.post('/student/student/', student)
+        
+       
+        for students in Student.objects.all():
+            if students.enrollment == student['enrollment']:
+                students.grade = grades
+
+        response = self.client.post('/student/result/', student_result_form)
+        student_after = Student.objects.all().count()
+        assert response_for_student.status_code == 200
+        assert student_before < student_after 
+        assert Student.objects.all().count() == 1

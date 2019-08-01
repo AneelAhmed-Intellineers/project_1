@@ -1,13 +1,13 @@
 from django.urls import path
 
 
-from . import views 
+from .views import IndexCreateView,ResultcreateView
 
 
 app_name = 'app'
 urlpatterns = [
-    path('student/', views.index, name='index'),
-    path('result/', views.detail, name='detail'),
-    path('thanks/', views.thanks),
+    path('student/', IndexCreateView.as_view(), name='index'),
+    path('result/', ResultcreateView.as_view(), name='detail'),
+    path('thanks/', IndexCreateView.thanks),
     #path('<int:student_id>/', views.result, name='result'),
 ]
