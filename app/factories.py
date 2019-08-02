@@ -18,5 +18,5 @@ class StudentFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('name')
     email = factory.Faker('email')
     department = factory.Faker('job')
-    enrollment = factory.Faker('ssn')
+    enrollment = factory.Faker('month')
     

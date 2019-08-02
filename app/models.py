@@ -24,10 +24,10 @@ class Grade(models.Model):
 
 class Student(models.Model):
 
-    name = models.CharField(max_length=30) 
-    email = models.EmailField(max_length=30)
-    department = models.CharField(max_length=40)
-    enrollment = models.CharField(max_length=30, null=False)
+    name = models.CharField(max_length=50) 
+    email = models.EmailField(max_length=50)
+    department = models.CharField(max_length=50)
+    enrollment = models.CharField(max_length=50, null=False)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, null=True)
 
 

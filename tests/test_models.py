@@ -46,3 +46,9 @@ def test_grade_null():
     with pytest.raises(AssertionError):
         grade = Grade.objects.create()
         assert grade.grade is None
+
+def test_str_grade():
+    
+    grade = GradeFactory.create()
+    assert str(grade) == grade.grade
+    

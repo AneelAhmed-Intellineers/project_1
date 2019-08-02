@@ -33,3 +33,14 @@ def test_form_invalid():
     })
 
     assert form.is_valid() == False
+
+def test_deprtmant_entry():
+    form = StudentForm(data={
+        'name':'andy',
+        'email':'andy@jj.com',
+        'department':'phy',
+        'enrollment':'2333',
+
+    })
+
+    assert form.is_valid() == False

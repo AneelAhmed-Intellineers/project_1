@@ -26,12 +26,11 @@ class IndexCreateView(View):
                 form  = self.form_class(request.POST)
                 if form.is_valid():
                         context = {
-                            'name': form.cleaned_data['name'],
-                            'email': form.cleaned_data['email'],
-                            'department': form.cleaned_data['department'],
-                            'enrollment':form.cleaned_data['enrollment'],
-
-                    }     
+                                'name': form.cleaned_data['name'],
+                                'email': form.cleaned_data['email'],
+                                'department': form.cleaned_data['department'],
+                                'enrollment':form.cleaned_data['enrollment'],
+                        }     
                         flag = True
                         for students in Student.objects.all():
                                 if students.enrollment == form.cleaned_data['enrollment']:
@@ -42,7 +41,7 @@ class IndexCreateView(View):
                         return HttpResponse(template.render(context, request))
 
                 else :
-                        return HttpResponse("The Data You Tryied to Enter is Already Register.. OR in Invalid")
+                        return HttpResponseBadRequest("The Data You Tryied to Enter is Already Register.. OR in Invalid")
                 
 
 

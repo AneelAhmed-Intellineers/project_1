@@ -23,7 +23,7 @@ class TestIndexViews:
         response = self.client.get('/student/student/')
         assert response.status_code == 200
 
-    def test_invalidForm(self):
+    def test_invalid_form(self):
 
         student_before = Student.objects.all().count()
         student = {
@@ -34,7 +34,7 @@ class TestIndexViews:
         assert response.status_code == 404
         assert student_before == Student.objects.all().count()
 
-    def test_ValidForm(self):
+    def test_Valid_form(self):
 
         student_before = Student.objects.all().count()
         student = factory.build(dict, FACTORY_CLASS=StudentFactory)
@@ -50,7 +50,11 @@ class TestIndexViews:
         response_two = self.client.post('/student/student/', student)
 
         assert Student.objects.all().count() == 1
-
+    
+    def test_thanks(self):
+        with pytest.raises(AssertionError):
+            response = self.client.get('/student/thanks/')
+            assert response.content == 'Helllo0 Thankyou very mUch'
 
 
 class TestResultView:
@@ -64,7 +68,7 @@ class TestResultView:
         response = self.client.get('/student/result/')
         assert response.status_code == 200
 
-    def test_invalidForm(self):
+    def test_invalid_form(self):
 
         student = {
 
@@ -73,7 +77,7 @@ class TestResultView:
         response = self.client.post('/student/result/', student)
         assert response.status_code == 400
 
-    def test_validForm(self):
+    def test_valid_form(self):
         with pytest.raises(AssertionError):
             student = {
 
