@@ -1,0 +1,12 @@
+<h1>Detail</h1>
+
+
+<form action="/student/thanks/" method="post">{% csrf_token %}
+<p>Name: {{ object.name }}</p>
+<p>Email: {{ object.email }}</p>
+<p>Department: {{ object.department }}</p>
+<p>Enrollment: {{object.enrollment}}</p>
+
+<input type="submit" value="Submit"></td>
+
+</form>

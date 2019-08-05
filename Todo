@@ -1,0 +1,9 @@
+- Check your factories---
+- Refactor test to be deterministic----
+- Check out Class Based Views (https://ccbv.co.uk/)
+- Check your formatting ----
+    - Spaces: 4
+    - Naming of Methods and variables
+- Tests for an app should be in the app directory
+
+- Department: Use django-autocomplete-light
