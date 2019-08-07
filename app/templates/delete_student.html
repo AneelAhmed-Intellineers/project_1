@@ -1,0 +1,11 @@
+<h1>Detail</h1>
+
+<form action="" method="post"> {% csrf_token %}
+    <p>Name: {{ object.name }}</p>
+    <p>Email: {{ object.email }}</p>
+    <p>Department: {{ object.department }}</p>
+    <p>Enrollment: {{object.enrollment}}</p>
+    <br>
+    <td><input type="submit" class="btn btn-Success" value="Delete"></td>
+
+</form>

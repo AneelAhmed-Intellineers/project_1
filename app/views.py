@@ -1,69 +1,57 @@
-from django.shortcuts import render, get_object_or_404,  redirect
-from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest
-from django.urls import reverse
-from django.views.generic import FormView, TemplateView,DetailView,ListView
-from django.template import loader
-from .models import Student, Grade
-from .forms import StudentForm, ResultForm
-from django.contrib import messages
-from django.views.generic.edit import FormView, CreateView
-from django.views.generic.edit import CreateView
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+
+from .models import Student
+from .serializers import StudentSerializer
 
 
 
-class StudentRegisterationCreateView(CreateView):
-    form_class = StudentForm
-    template_name = 'forms.html'
+@csrf_exempt
+def student_list(request):
 
-    def get_success_url(self):
-        return reverse ("app:student_detail", args=(self.object.id,))
+    if request.method == 'GET':
+        student = Student.objects.all()
+        serializer = StudentSerializer(student, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
-    
+    elif request.method == 'POST':
 
-class StudentDetailView(DetailView):
+        data = JSONParser().parse(request)
+        serializer = StudentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data,status=201)
 
-    model = Student
-    template_name =  'detailview.html'   
-    pk_url_kwarg = 'pk'
-    
+        return JsonResponse(serializer.errors, status=400)
 
-class ResultFormView(FormView):
-    
-    form_class = ResultForm
-    template_name = 'result.html'
+@csrf_exempt
 
-    def form_invalid(self, form):
-        a = form.data['enrollment']
-        return HttpResponseRedirect('/student/view_result/%s'%a)
+def student_detail(request, pk):
+    try:
+        student = Student.objects.get(pk=pk)
+    except Student.DoesNotExist:
+        return HttpResponse(status=404)
 
-    def form_valid(self, form):
+    if request.method == 'GET':
 
-        return HttpResponse("No Data Found under This enrollment number..")
-    
-class ResultDetailView(DetailView):
-    model = Student
-    template_name = 'resultview.html'
-    pk_url_kwarg = 'enrollment'
+        serializer = StudentSerializer(student)
+        return JsonResponse(serializer.data)
 
-    def get_object(self):
-        obj = self.model.objects.get(enrollment=self.kwargs['enrollment'])
-        return obj
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = StudentSerializer(student,data=data)
 
+        if serializer.is_valid():
+            serializer.save()
 
-def thanks(response):
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
 
-    return HttpResponse("Thankyou For using this Site.....")
+    elif request.method == 'DELETE':
 
+        student.delete()
+        return HttpResponse(status=204)
 
-class StudentListView(ListView):
-    context_object_name = 'student'
-    template_name = 'studentlist.html'
-    model = Student
-    #queryset = Student.objects.filter(name='Martin')
+        
 
-
-class SearchResultView(ListView):
-    context_object_name = 'student'
-    def get_queryset(self):
-        return Student.objects.filter(name=self.request.user)
-    template_name = 'studentlist.html'
