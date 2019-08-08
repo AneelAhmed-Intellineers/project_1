@@ -1,9 +1,15 @@
 from django.urls import path
+from django.conf.urls import url, include
+from rest_framework import routers
+
 from .import views
 
-
+router = routers.DefaultRouter()
+router.register(r'StudentViews', views.StudentViews)
 app_name = 'app'
+
+
 urlpatterns = [
-    path('', views.student_list, name='student_list'),
-    path ('<int:pk>/', views.student_detail, name='student_detail')
+    path('', views.StudentCreateView.as_view(), name='student_registeration'),
+    path('api/', include(router.urls))
 ]

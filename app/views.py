@@ -1,57 +1,38 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-
+from django.views.generic import CreateView, ListView
+from django.contrib import messages
+from rest_framework import generics, mixins, viewsets
 from .models import Student
 from .serializers import StudentSerializer
+from .forms import StudentForm
 
 
+class StudentCreateView(CreateView):
 
-@csrf_exempt
-def student_list(request):
+    model = Student
+    form_class = StudentForm
+    template_name = 'forms.html'
 
-    if request.method == 'GET':
-        student = Student.objects.all()
-        serializer = StudentSerializer(student, many=True)
-        return JsonResponse(serializer.data, safe=False)
+    success_url = '/'
 
-    elif request.method == 'POST':
+    def form_valid(self, form):
+        return_statement = super().form_valid(form)
+        messages.add_message(self.request, messages.SUCCESS,('Thankyou Your request have been Registered.'))
 
-        data = JSONParser().parse(request)
-        serializer = StudentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data,status=201)
+        return return_statement
 
-        return JsonResponse(serializer.errors, status=400)
+class StudentViews(viewsets.ModelViewSet):
 
-@csrf_exempt
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
 
-def student_detail(request, pk):
-    try:
-        student = Student.objects.get(pk=pk)
-    except Student.DoesNotExist:
-        return HttpResponse(status=404)
+    def get_student(self):
+        return Student.object.get(pk=self.kwargs['id'])
 
-    if request.method == 'GET':
+    def get_queryset(self):
 
-        serializer = StudentSerializer(student)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = StudentSerializer(student,data=data)
-
-        if serializer.is_valid():
-            serializer.save()
-
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-
-        student.delete()
-        return HttpResponse(status=204)
-
-        
+        student = self.get_student
+        return self.queryset
 
