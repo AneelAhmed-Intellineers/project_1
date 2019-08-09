@@ -5,11 +5,13 @@ from rest_framework import routers
 from .import views
 
 router = routers.DefaultRouter()
-router.register(r'StudentViews', views.StudentViews)
+router.register(r'student', views.StudentModelViewSet)
+router.register(r'student_result',views.ResultView)
+
 app_name = 'app'
 
 
 urlpatterns = [
     path('', views.StudentCreateView.as_view(), name='student_registeration'),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
 ]

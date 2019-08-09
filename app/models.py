@@ -32,10 +32,6 @@ class Student(models.Model):
     enrollment = models.CharField(max_length=50, null=False, unique=True)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, null=True)
     
-    #def get_absolute_url(self):
-        #return ( reverse("app:resultview", kwargs={"enrollment": self.enrollment}))   
-
-    
     
     def __str__(self):
 

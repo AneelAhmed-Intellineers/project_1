@@ -4,11 +4,11 @@ from rest_framework.parsers import JSONParser
 from django.views.generic import CreateView, ListView
 from django.contrib import messages
 from rest_framework import generics, mixins, viewsets
-from .models import Student
-from .serializers import StudentSerializer
+from .models import Student, Grade
+from .serializers import StudentSerializer, ResultSerializer
 from .forms import StudentForm
-
-
+from rest_framework import views
+from  rest_framework.response import Response
 class StudentCreateView(CreateView):
 
     model = Student
@@ -23,16 +23,31 @@ class StudentCreateView(CreateView):
 
         return return_statement
 
-class StudentViews(viewsets.ModelViewSet):
-
+class StudentModelViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-    def get_student(self):
-        return Student.object.get(pk=self.kwargs['id'])
+    
+    """def get_queryset(self):
+        self.request.user --> Entrollment number
 
-    def get_queryset(self):
+        return super().get_queryset().get(enrollment_numb)"""
 
-        student = self.get_student
-        return self.queryset
 
+
+class ResultView(viewsets.ModelViewSet):
+    queryset = Student.objects.none()
+    serializer_class = ResultSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serlializer = self.get_serializer(data=request.data)
+        print ("Hello..........")
+        serlializer.is_valid()
+        print ("Hello....")
+        if serlializer.errors:
+            for student in Student.objects.all():
+                if student.enrollment == serlializer.data['enrollment']:
+        
+                    return Response({'Name:':student.name, 'Department':student.department, 'Email:':student.email,})
+        
+        return Response("No Data Found..")
