@@ -4,20 +4,11 @@ from django.contrib.auth.models import User, Group
 
 
 class StudentSerializer(serializers.ModelSerializer):
-
     class Meta:
 
         model = Student
-        fields = ['name', 'email', 'department', 'enrollment','id', 'grade']
+        fields = ['name', 'email', 'department', 'enrollment']
 
-
-
-class GradeSerializer(serializers.ModelSerializer):
-
-
-    class Meta:
-        model = Grade
-        fields = ['grade']
 
 class ResultSerializer(serializers.ModelSerializer):
 

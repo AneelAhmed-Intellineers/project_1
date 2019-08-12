@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+from django.contrib.auth import get_user_model
 
 
 class Grade(models.Model):
@@ -31,10 +32,11 @@ class Student(models.Model):
     department = models.CharField(max_length=50)
     enrollment = models.CharField(max_length=50, null=False, unique=True)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, null=True, unique=False)
     
     
-    def __str__(self):
 
+    def __str__(self):
         return self.name
         
 
