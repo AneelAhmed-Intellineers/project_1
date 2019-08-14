@@ -5,8 +5,8 @@ from rest_framework import routers
 from .import views
 
 router = routers.DefaultRouter()
-router.register(r'student', views.StudentModelViewSet)
-router.register(r'student_result',views.ResultView)
+router.register(r'student', views.StudentModelViewSet, basename='student')
+router.register(r'student_result',views.ResultView, basename='student_result')
 
 app_name = 'app'
 

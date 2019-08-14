@@ -45,7 +45,7 @@ class StudentModelViewSet(viewsets.ModelViewSet):
   
     def create(self, request, *args, **kwargs):
         serliazer = self.get_serializer(data=request.data)
-        serliazer.is_valid()
+        serliazer.is_valid(raise_exception=True)
         self.perform_create(serliazer)
         user = User.objects.create(
                 username=serliazer.data['enrollment'],
@@ -58,6 +58,7 @@ class StudentModelViewSet(viewsets.ModelViewSet):
         student.save()
         return HttpResponseRedirect('/api/student/')
 
+    
 
 class ResultView(viewsets.ModelViewSet):
     queryset = Student.objects.all()
@@ -73,3 +74,9 @@ class ResultView(viewsets.ModelViewSet):
                 student = Student.objects.get(enrollment=serlializer.data['enrollment'])
                 return Response(f'name:{student.name} Email:{student.email} Department:{student.department} enrollment:{student.enrollment} grade:{student.grade}')
         return Response("No Data Found..")
+
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
