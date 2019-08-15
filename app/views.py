@@ -50,7 +50,7 @@ class StudentModelViewSet(viewsets.ModelViewSet):
         user = User.objects.create(
                 username=serliazer.data['enrollment'],
                 email=serliazer.data['email'],
-                password=serliazer.data['enrollment'],
+                password='abcd.1234',
                 is_active=True
             )
         student = Student.objects.get(enrollment=serliazer.data['enrollment'])
@@ -61,7 +61,7 @@ class StudentModelViewSet(viewsets.ModelViewSet):
     
 
 class ResultView(viewsets.ModelViewSet):
-    queryset = Student.objects.all()
+    queryset = Student.objects.none()
     serializer_class = ResultSerializer
     
     def create(self, request, *args, **kwargs):
@@ -69,6 +69,7 @@ class ResultView(viewsets.ModelViewSet):
         serlializer.is_valid()
         if serlializer.errors:
             user = authenticate(username=serlializer.data['enrollment'], password='abcd.1234')
+            print(serlializer.data['enrollment'])
             if user is not None:
                 login(request, user)
                 student = Student.objects.get(enrollment=serlializer.data['enrollment'])

@@ -3,10 +3,12 @@ import factory
 from django.test import Client
 from django.shortcuts import reverse
 from http.client import responses
+from django.contrib.auth import authenticate
 
 from app.views import StudentModelViewSet, ResultView
 from app.models import Grade, Student
 from app.factories import GradeFactory, StudentFactory
+from app.serializers import StudentSerializer, ResultSerializer
 
 pytestmark = pytest.mark.django_db
 
@@ -37,9 +39,14 @@ class TestStudentModelViewSet:
         student_before = Student.objects.all().count()
         student = factory.build(dict, FACTORY_CLASS=StudentFactory)
         response = self.client.post('/api/student/', student)
-
         assert Student.objects.all().count() > student_before
 
+    def test_create_serializer(self):
+
+        student = factory.build(dict, FACTORY_CLASS=StudentFactory)
+        serializer = StudentSerializer(data=student)
+        assert serializer.is_valid() == True
+        
 
 class TestResultView:
 
@@ -63,6 +70,7 @@ class TestResultView:
         assert response.status_code == 301
         assert response.context == None
 
+
     def test_valid_login_data(self):
 
         student = factory.build(dict, FACTORY_CLASS=StudentFactory)
@@ -80,4 +88,14 @@ class TestResultView:
 
         assert response.status_code == 200
 
+    def test_login(self):
+        
+        student = factory.build(dict, FACTORY_CLASS=StudentFactory)
+        
+        response_student = self.client.post('/api/student/', student)
+        response_login = self.client.login(username=student['enrollment'], password='abcd.1234')
+        print(response_login)
+        assert response_login == False
+        assert Student.objects.get(enrollment=student['enrollment']).user.username == student['enrollment']
+        
 
